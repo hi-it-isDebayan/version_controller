@@ -55,6 +55,19 @@ pip install -e .
 
 Edits to the source files take effect immediately — no reinstall needed.
 
+## CLI
+
+All features are also available via the `vc` command-line tool:
+
+```bash
+vc start "Build login"
+vc track login.py
+vc save "Create login"
+vc log
+```
+
+See the full reference: [CLI.md](CLI.md)
+
 ## Quick start
 
 ```python
