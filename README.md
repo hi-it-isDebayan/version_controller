@@ -29,11 +29,15 @@ If you get a PEP 668 error on Ubuntu/Debian:
 pip install git+https://github.com/hi-it-isDebayan/version_controller.git --break-system-packages
 ```
 
-If `pip` command is not found on Windows, use:
+### Windows (cmd / PowerShell)
+
+If `pip` gives you "Unable to create process" or "not found", use `python -m pip` instead:
 
 ```powershell
 python -m pip install git+https://github.com/hi-it-isDebayan/version_controller.git
 ```
+
+This bypasses the broken `pip.exe` launcher and runs pip via Python directly.
 
 After install, verify:
 
