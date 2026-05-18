@@ -42,7 +42,7 @@ This bypasses the broken `pip.exe` launcher and runs pip via Python directly.
 After install, verify:
 
 ```bash
-python3 -c "from version_controller import VersionController; print('ready')"
+python -c "from version_controller import VersionController; print('ready')"
 ```
 
 ### Editable install (for development)
