@@ -244,103 +244,132 @@ def main():
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command")
 
-    p = sub.add_parser("start", help="Start a new task")
+    EXAMPLES = {
+        "start": "  vc start \"Add login feature\"",
+        "track": "  vc track src/main.py",
+        "save": "  vc save \"Implemented auth\"  |  vc save \"Fix\" --agent agent-1",
+        "log": "  vc log",
+        "rollback": "  vc rollback --version 2  |  vc rollback --commit abc1234",
+        "diff": "  vc diff  |  vc diff abc1234 def5678",
+        "feedback": "  vc feedback \"Needs review\"",
+        "sync": "  vc sync  |  vc sync \"sync metadata before push\"",
+        "tasks": "  vc tasks",
+        "complete": "  vc complete T00001",
+        "current": "  vc current",
+        "restore": "  vc restore",
+        "push": "  vc push  |  vc push upstream main",
+        "pull": "  vc pull  |  vc pull upstream vc-data",
+        "amend": "  vc amend \"Updated commit message\"",
+        "shelve": "  vc shelve wip-branch",
+        "unshelve": "  vc unshelve  |  vc unshelve wip-branch",
+        "prev": "  vc prev",
+        "next": "  vc next",
+        "status": "  vc status",
+        "undo": "  vc undo",
+        "redo": "  vc redo",
+        "hide": "  vc hide abc1234",
+        "unhide": "  vc unhide abc1234",
+        "export": "  vc export",
+        "context": "  vc context  |  vc context --depth 10",
+    }
+
+    p = sub.add_parser("start", help="Start a new task", epilog=EXAMPLES["start"])
     p.add_argument("description")
     p.set_defaults(func=cmd_start)
 
-    p = sub.add_parser("track", help="Track a file")
+    p = sub.add_parser("track", help="Track a file", epilog=EXAMPLES["track"])
     p.add_argument("path")
     p.set_defaults(func=cmd_track)
 
-    p = sub.add_parser("save", help="Save a snapshot (auto-stages all)")
+    p = sub.add_parser("save", help="Save a snapshot (auto-stages all)", epilog=EXAMPLES["save"])
     p.add_argument("message")
     p.add_argument("--agent", default=None)
     p.add_argument("--files", nargs="*", default=None)
     p.set_defaults(func=cmd_save)
 
-    p = sub.add_parser("log", aliases=["history"], help="Show task history")
+    p = sub.add_parser("log", aliases=["history"], help="Show task history", epilog=EXAMPLES["log"])
     p.set_defaults(func=cmd_log)
 
-    p = sub.add_parser("rollback", help="Rollback to a version")
+    p = sub.add_parser("rollback", help="Rollback to a version", epilog=EXAMPLES["rollback"])
     p.add_argument("--version", type=int, default=None)
     p.add_argument("--commit", default=None)
     p.set_defaults(func=cmd_rollback)
 
-    p = sub.add_parser("diff", help="Show diff between commits")
+    p = sub.add_parser("diff", help="Show diff between commits", epilog=EXAMPLES["diff"])
     p.add_argument("commit_a", nargs="?")
     p.add_argument("commit_b", nargs="?")
     p.set_defaults(func=cmd_diff)
 
-    p = sub.add_parser("feedback", help="Add feedback")
+    p = sub.add_parser("feedback", help="Add feedback", epilog=EXAMPLES["feedback"])
     p.add_argument("text")
     p.set_defaults(func=cmd_feedback)
 
-    p = sub.add_parser("sync", help="Sync metadata to vc-data branch")
+    p = sub.add_parser("sync", help="Sync metadata to vc-data branch", epilog=EXAMPLES["sync"])
     p.add_argument("message", nargs="?", default=None)
     p.set_defaults(func=cmd_sync)
 
-    p = sub.add_parser("tasks", help="List all tasks")
+    p = sub.add_parser("tasks", help="List all tasks", epilog=EXAMPLES["tasks"])
     p.set_defaults(func=cmd_tasks)
 
-    p = sub.add_parser("complete", help="Mark a task as completed")
+    p = sub.add_parser("complete", help="Mark a task as completed", epilog=EXAMPLES["complete"])
     p.add_argument("task_id")
     p.set_defaults(func=cmd_complete)
 
-    p = sub.add_parser("current", help="Show the current active task")
+    p = sub.add_parser("current", help="Show the current active task", epilog=EXAMPLES["current"])
     p.set_defaults(func=cmd_current)
 
-    p = sub.add_parser("restore", help="Restore metadata from vc-data branch")
+    p = sub.add_parser("restore", help="Restore metadata from vc-data branch", epilog=EXAMPLES["restore"])
     p.set_defaults(func=cmd_restore)
 
-    p = sub.add_parser("push", help="Git push")
+    p = sub.add_parser("push", help="Git push", epilog=EXAMPLES["push"])
     p.add_argument("remote", nargs="?", default="origin")
     p.add_argument("branch", nargs="?", default=None)
     p.set_defaults(func=cmd_push)
 
-    p = sub.add_parser("pull", help="Git pull")
+    p = sub.add_parser("pull", help="Git pull", epilog=EXAMPLES["pull"])
     p.add_argument("remote", nargs="?", default="origin")
     p.add_argument("branch", nargs="?", default=None)
     p.set_defaults(func=cmd_pull)
 
-    p = sub.add_parser("amend", help="Amend last commit message")
+    p = sub.add_parser("amend", help="Amend last commit message", epilog=EXAMPLES["amend"])
     p.add_argument("message")
     p.set_defaults(func=cmd_amend)
 
-    p = sub.add_parser("shelve", help="Shelve changes")
+    p = sub.add_parser("shelve", help="Shelve changes", epilog=EXAMPLES["shelve"])
     p.add_argument("name")
     p.set_defaults(func=cmd_shelve)
 
-    p = sub.add_parser("unshelve", help="Unshelve changes")
+    p = sub.add_parser("unshelve", help="Unshelve changes", epilog=EXAMPLES["unshelve"])
     p.add_argument("name", nargs="?")
     p.set_defaults(func=cmd_unshelve)
 
-    p = sub.add_parser("prev", help="Go to parent commit")
+    p = sub.add_parser("prev", help="Go to parent commit", epilog=EXAMPLES["prev"])
     p.set_defaults(func=cmd_prev)
 
-    p = sub.add_parser("next", help="Go to child commit")
+    p = sub.add_parser("next", help="Go to child commit", epilog=EXAMPLES["next"])
     p.set_defaults(func=cmd_next)
 
-    p = sub.add_parser("status", help="Show working tree status")
+    p = sub.add_parser("status", help="Show working tree status", epilog=EXAMPLES["status"])
     p.set_defaults(func=cmd_status)
 
-    p = sub.add_parser("undo", help="Undo last operation (Sapling only)")
+    p = sub.add_parser("undo", help="Undo last operation (Sapling only)", epilog=EXAMPLES["undo"])
     p.set_defaults(func=cmd_undo)
 
-    p = sub.add_parser("redo", help="Redo last undo (Sapling only)")
+    p = sub.add_parser("redo", help="Redo last undo (Sapling only)", epilog=EXAMPLES["redo"])
     p.set_defaults(func=cmd_redo)
 
-    p = sub.add_parser("hide", help="Hide a commit (Sapling only)")
+    p = sub.add_parser("hide", help="Hide a commit (Sapling only)", epilog=EXAMPLES["hide"])
     p.add_argument("rev")
     p.set_defaults(func=cmd_hide)
 
-    p = sub.add_parser("unhide", help="Unhide a commit (Sapling only)")
+    p = sub.add_parser("unhide", help="Unhide a commit (Sapling only)", epilog=EXAMPLES["unhide"])
     p.add_argument("rev")
     p.set_defaults(func=cmd_unhide)
 
-    p = sub.add_parser("export", help="Export TOON output")
+    p = sub.add_parser("export", help="Export TOON output", epilog=EXAMPLES["export"])
     p.set_defaults(func=cmd_export)
 
-    p = sub.add_parser("context", help="Show context summary")
+    p = sub.add_parser("context", help="Show context summary", epilog=EXAMPLES["context"])
     p.add_argument("--depth", type=int, default=5)
     p.set_defaults(func=cmd_context)
 
