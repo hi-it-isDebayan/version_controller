@@ -123,7 +123,7 @@ class MetadataBranch:
                 tmp_path = full_path + ".tmp"
                 with open(tmp_path, "w") as f:
                     f.write(content)
-                os.rename(tmp_path, full_path)
+                os.replace(tmp_path, full_path)
                 restored += 1
 
         return {"restored": True, "file_count": restored}

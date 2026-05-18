@@ -38,7 +38,7 @@ def _atomic_write(path: str, rows: list, fieldnames: list):
         writer.writeheader()
         for row in rows:
             writer.writerow(row)
-    os.rename(tmp_path, path)
+    os.replace(tmp_path, path)
 
 
 def _read_csv(path: str) -> list:
@@ -59,7 +59,7 @@ def _append_csv(path: str, row: dict, fieldnames: list):
         for r in existing:
             writer.writerow(r)
         writer.writerow(row)
-    os.rename(tmp_path, path)
+    os.replace(tmp_path, path)
 
 
 class CsvLogger:
@@ -299,7 +299,7 @@ class CsvLogger:
         tmp_path = full_path + ".tmp"
         with open(tmp_path, "w") as f:
             f.write(content)
-        os.rename(tmp_path, full_path)
+        os.replace(tmp_path, full_path)
 
     def rel_path_from_vc(self, abs_path: str) -> str:
         vc_dir = os.path.dirname(self.csv_dir)

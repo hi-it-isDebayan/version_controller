@@ -23,7 +23,7 @@ class Rollback:
                 tmp = fpath + ".tmp"
                 with open(tmp, "w") as f:
                     f.write(content)
-                os.rename(tmp, fpath)
+                os.replace(tmp, fpath)
             except OSError:
                 pass
 
