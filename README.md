@@ -2,6 +2,8 @@
 
 A reusable infrastructure layer for managing execution snapshots, rollback, execution chains, task history, feedback tracking, and SCM abstraction (Git/Sapling) for multi-agent AI systems.
 
+> **Note:** This repo is private. Install via SSH (requires your SSH key to be added to GitHub).
+
 ## Requirements
 
 Before installing, ensure your system has:
@@ -20,16 +22,14 @@ Before installing, ensure your system has:
 ### Global install (one command, any directory)
 
 ```bash
-pip install git+https://github.com/hi-it-isDebayan/version_controller.git
+pip install "git+ssh://git@github.com/hi-it-isDebayan/version_controller.git"
 ```
 
-This works on:
-- **Ubuntu/Debian**: Add `--break-system-packages` if PEP 668 blocks it
-  ```bash
-  pip install git+https://github.com/hi-it-isDebayan/version_controller.git --break-system-packages
-  ```
-- **Windows (PowerShell)**: Same command, no extra flags needed
-- **macOS**: Same command, no extra flags needed
+If you get a PEP 668 error on Ubuntu/Debian, add `--break-system-packages`:
+
+```bash
+pip install "git+ssh://git@github.com/hi-it-isDebayan/version_controller.git" --break-system-packages
+```
 
 After install, verify:
 
@@ -40,7 +40,7 @@ python3 -c "from version_controller import VersionController; print('ready')"
 ### Editable install (for development)
 
 ```bash
-git clone https://github.com/hi-it-isDebayan/version_controller.git
+git clone git@github.com:hi-it-isDebayan/version_controller.git
 cd version_controller
 pip install -e .
 ```
