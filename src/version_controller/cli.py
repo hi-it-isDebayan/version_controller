@@ -193,6 +193,16 @@ def cmd_unhide(args):
         print("unhide not supported on Git backend")
 
 
+def cmd_tasks(args):
+    vc = get_vc()
+    tasks = vc.csv_logger.list_tasks()
+    if not tasks:
+        print("no tasks")
+        return
+    for t in tasks:
+        print(f"{t['task_id']:8} {t['status']:8} {t.get('description','')}")
+
+
 def cmd_export(args):
     vc = get_vc()
     print(vc.export_toon())
@@ -244,6 +254,9 @@ def main():
     p = sub.add_parser("sync", help="Sync metadata to vc-data branch")
     p.add_argument("message", nargs="?", default=None)
     p.set_defaults(func=cmd_sync)
+
+    p = sub.add_parser("tasks", help="List all tasks")
+    p.set_defaults(func=cmd_tasks)
 
     p = sub.add_parser("restore", help="Restore metadata from vc-data branch")
     p.set_defaults(func=cmd_restore)
