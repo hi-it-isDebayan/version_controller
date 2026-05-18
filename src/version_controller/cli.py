@@ -203,6 +203,30 @@ def cmd_tasks(args):
         print(f"{t['task_id']:8} {t['status']:8} {t.get('description','')}")
 
 
+def cmd_complete(args):
+    vc = get_vc()
+    vc.csv_logger.update_task(args.task_id, status="completed")
+    print(f"{args.task_id} completed")
+
+
+def cmd_current(args):
+    vc = get_vc()
+    tid = vc._current_task_id
+    if not tid:
+        tasks = vc.csv_logger.list_tasks()
+        active = [t for t in tasks if t.get("status") == "active"]
+        if active:
+            tid = active[-1]["task_id"]
+    if tid:
+        t = vc.csv_logger.get_task(tid)
+        if t:
+            print(f"{t['task_id']} {t['status']} {t.get('description','')}")
+        else:
+            print("no active task")
+    else:
+        print("no active task")
+
+
 def cmd_export(args):
     vc = get_vc()
     print(vc.export_toon())
@@ -257,6 +281,13 @@ def main():
 
     p = sub.add_parser("tasks", help="List all tasks")
     p.set_defaults(func=cmd_tasks)
+
+    p = sub.add_parser("complete", help="Mark a task as completed")
+    p.add_argument("task_id")
+    p.set_defaults(func=cmd_complete)
+
+    p = sub.add_parser("current", help="Show the current active task")
+    p.set_defaults(func=cmd_current)
 
     p = sub.add_parser("restore", help="Restore metadata from vc-data branch")
     p.set_defaults(func=cmd_restore)
