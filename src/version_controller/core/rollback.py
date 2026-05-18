@@ -1,21 +1,49 @@
+import os
+
+
 class Rollback:
     def __init__(self, backend, csv_logger, execution_chain):
         self.backend = backend
         self.csv_logger = csv_logger
         self.execution_chain = execution_chain
 
+    def _save_csvs(self) -> dict:
+        saved = {}
+        for fpath in self.csv_logger.get_all_csv_paths():
+            try:
+                with open(fpath, "r") as f:
+                    saved[fpath] = f.read()
+            except OSError:
+                pass
+        return saved
+
+    def _restore_csvs(self, saved: dict):
+        for fpath, content in saved.items():
+            try:
+                tmp = fpath + ".tmp"
+                with open(tmp, "w") as f:
+                    f.write(content)
+                os.rename(tmp, fpath)
+            except OSError:
+                pass
+
     def to_commit(self, commit_id: str, task_id: str = None) -> dict:
         old_head = self.backend.get_head()
 
-        # Save chain state before checkout (checkout may restore old chain file)
+        # Save chain state and CSV contents before checkout
         chain_saved = None
+        csvs_saved = {}
         if task_id:
             chain_saved = self.execution_chain.get_chain(task_id)
+            csvs_saved = self._save_csvs()
 
         self.backend.checkout(commit_id)
 
+        # Restore CSV contents that checkout may have reverted
+        if csvs_saved:
+            self._restore_csvs(csvs_saved)
+
         if task_id and chain_saved:
-            # Restore chain state that was overwritten by checkout
             self.execution_chain.set_chain(task_id, chain_saved)
             self.execution_chain.rollback_to(task_id, commit_id)
             self.csv_logger.log_event(task_id, {
