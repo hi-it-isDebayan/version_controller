@@ -2,7 +2,7 @@
 
 A reusable infrastructure layer for managing execution snapshots, rollback, execution chains, task history, feedback tracking, and SCM abstraction (Git/Sapling) for multi-agent AI systems.
 
-> **Note:** This repo is private. Install via SSH (requires your SSH key to be added to GitHub).
+
 
 ## Requirements
 
@@ -19,34 +19,20 @@ Before installing, ensure your system has:
 
 ## Installation
 
-### Global install (one command, any directory)
-
-### Linux / macOS
-
 ```bash
-pip install "git+ssh://git@github.com/hi-it-isDebayan/version_controller.git"
+pip install git+https://github.com/hi-it-isDebayan/version_controller.git
 ```
 
-If you get a PEP 668 error on Ubuntu/Debian, add `--break-system-packages`:
+If you get a PEP 668 error on Ubuntu/Debian:
 
 ```bash
-pip install "git+ssh://git@github.com/hi-it-isDebayan/version_controller.git" --break-system-packages
+pip install git+https://github.com/hi-it-isDebayan/version_controller.git --break-system-packages
 ```
 
-### Windows (cmd / PowerShell)
-
-Use `python -m pip` instead of `pip` directly (fixes the "Unable to create process" error):
+If `pip` command is not found on Windows, use:
 
 ```powershell
-python -m pip install "git+https://<YOUR_TOKEN>@github.com/hi-it-isDebayan/version_controller.git"
-```
-
-Replace `<YOUR_TOKEN>` with a GitHub personal access token (scope: `repo`). Generate one at **https://github.com/settings/tokens**.
-
-Or use **Git Bash** (bundled with Git for Windows) for SSH:
-
-```bash
-pip install "git+ssh://git@github.com/hi-it-isDebayan/version_controller.git"
+python -m pip install git+https://github.com/hi-it-isDebayan/version_controller.git
 ```
 
 After install, verify:
@@ -58,7 +44,7 @@ python3 -c "from version_controller import VersionController; print('ready')"
 ### Editable install (for development)
 
 ```bash
-git clone git@github.com:hi-it-isDebayan/version_controller.git
+git clone https://github.com/hi-it-isDebayan/version_controller.git
 cd version_controller
 pip install -e .
 ```
