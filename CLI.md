@@ -2,6 +2,10 @@
 
 All commands are run with `vc <command> [options]` from inside a project directory.
 
+> `vc` covers the task-tracking workflow. For advanced operations like rebase,
+> merge, split, or graft, use `git` or `sl` directly — they work alongside `vc`
+> without conflict.
+
 ## Task management
 
 ### `vc start <description>`

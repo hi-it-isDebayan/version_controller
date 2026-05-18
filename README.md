@@ -4,18 +4,33 @@ A reusable infrastructure layer for managing execution snapshots, rollback, exec
 
 
 
-## Requirements
+## System dependencies
 
-Before installing, ensure your system has:
+These must be installed on your system before using `vc`.
 
-| Requirement | Minimum | Notes |
-|---|---|---|
-| Python | 3.10+ | Tested on 3.10–3.13 |
-| pip | Latest | Comes with Python 3.10+ |
-| Git | Any version | Required for metadata sync |
-| **OS** | Linux / macOS / Windows | Works on all three via WSL, native terminal, or PowerShell |
+| Dependency | Required | Check | Install |
+|---|---|---|---|
+| Python 3.10+ | Yes | `python --version` | [python.org](https://python.org/downloads/) |
+| Git | Yes | `git --version` | [git-scm.com](https://git-scm.com/downloads) |
+| Sapling (sl) | No | `sl --version` | [sapling-scm.com](https://sapling-scm.com/) |
 
-**Optional (for Sapling backend):** Install [Sapling (sl)](https://sapling-scm.com/) for undo/redo/hide features.
+### Installing Sapling (optional — enables undo/redo/hide)
+
+```bash
+# Linux / macOS
+curl -LsSf https://sapling-scm.com/install.sh | sh
+
+# Windows (PowerShell)
+winget install Sapling.Sapling
+```
+
+### Verify everything is ready
+
+```bash
+git --version
+python --version
+sl --version   # optional
+```
 
 ## Installation
 
@@ -144,6 +159,28 @@ When you create a `VersionController(workspace="/path/to/project")`, the module 
 - **Per-task file isolation**: Each agent writes to its own `execution_log_{task_id}.csv`
 - **File-level locking**: `fcntl` locks on `.csv_lock` — exclusive for writes, shared for reads
 - **Workspace sandbox**: All metadata stays within `.version_controller/` under the workspace
+
+## Using Git / Sapling directly
+
+`vc` is a high-level layer for task tracking and metadata. It doesn't replace Git
+or Sapling — it wraps them. For anything `vc` doesn't cover, use the underlying
+tool directly:
+
+```bash
+# Git — works in any vc workspace
+git log --oneline --graph
+git rebase -i HEAD~3
+git branch feature-x
+
+# Sapling — works if using sl backend
+sl log -r "draft()"
+sl split -r .
+sl fold -r "draft()"
+```
+
+The `.version_controller/` directory is in `.gitignore` — raw Git/Sapling
+operations won't touch metadata. The `vc-data` branch is separate from source
+branches. No interference.
 
 ## License
 
