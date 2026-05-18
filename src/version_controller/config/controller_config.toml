@@ -1,0 +1,39 @@
+[workspace]
+root = "./workspace"
+sandbox_enabled = true
+
+[backend]
+default = "git"
+available = ["git", "sapling"]
+
+[snapshot]
+auto_stage = true
+require_validation = true
+commit_message_prefix = "VC"
+
+[validation]
+syntax_check = true
+lint_check = true
+lightweight_tests = true
+required = true
+
+[rollback]
+preserve_metadata = true
+preserve_chains = true
+create_rollback_log = true
+
+[storage]
+toon_path = ".version_controller/toon"
+metadata_path = ".version_controller/metadata"
+cache_path = ".version_controller/cache"
+chains_path = ".version_controller/chains"
+
+[logging]
+format = "toon"
+max_entries_per_task = 100
+deterministic = true
+
+[execution]
+parallel_modification = false
+single_task_mode = true
+max_context_depth = 5

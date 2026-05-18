@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "version-controller"
+version = "1.0.0"
+description = "Reusable infrastructure layer for multi-agent execution management"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["version_controller*"]
