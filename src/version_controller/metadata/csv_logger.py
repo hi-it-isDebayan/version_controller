@@ -1,6 +1,6 @@
 import os
 import csv
-import fcntl
+import sys
 import time
 from typing import Optional, Callable, Any
 
@@ -9,15 +9,26 @@ from ..logs.serializer import serialize_toon
 
 
 def _with_lock(lock_path: str, mode: str, fn: Callable) -> Any:
-    with open(lock_path, "w") as lf:
-        if mode == "w":
-            fcntl.flock(lf, fcntl.LOCK_EX)
-        else:
-            fcntl.flock(lf, fcntl.LOCK_SH)
+    if sys.platform == "win32":
+        import msvcrt
+        fd = os.open(lock_path, os.O_CREAT | os.O_RDWR)
         try:
-            return fn()
+            msvcrt.locking(fd, msvcrt.LK_LOCK, 1)
+            try:
+                return fn()
+            finally:
+                msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
         finally:
-            fcntl.flock(lf, fcntl.LOCK_UN)
+            os.close(fd)
+    else:
+        import fcntl
+        with open(lock_path, "w") as lf:
+            mode_flag = fcntl.LOCK_EX if mode == "w" else fcntl.LOCK_SH
+            fcntl.flock(lf, mode_flag)
+            try:
+                return fn()
+            finally:
+                fcntl.flock(lf, fcntl.LOCK_UN)
 
 
 def _atomic_write(path: str, rows: list, fieldnames: list):
