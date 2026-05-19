@@ -137,8 +137,21 @@ vc.hide("abc1234")
 | Prev/next navigation | `prev()`, `next()` | ✓ | ✓ |
 | Push/pull | `push()`, `pull()` | ✓ | ✓ |
 | Sync metadata branch | `sync()`, `restore()` | ✓ | ✓ |
-| Undo/redo | `undo()`, `redo()` | — | ✓ |
-| Hide/unhide commits | `hide()`, `unhide()` | — | ✓ |
+| Undo/redo | `undo()`, `redo()` | — (auto-fallback ✓) | ✓ |
+| Hide/unhide commits | `hide()`, `unhide()` | — (auto-fallback ✓) | ✓ |
+
+### Auto-fallback to Sapling
+
+Operations that Git cannot natively do (`undo`, `redo`, `hide`, `unhide`) use the
+**installed `sl` CLI automatically** when the Git backend is active. No
+reconfiguration needed.
+
+```
+Git backend  ──→ undo() → NotImplementedError ──→ detects sl on PATH ──→ runs sl undo
+```
+
+If Sapling is not installed, a clear error tells you how to install it. See
+[Installing Sapling](#installing-sapling-optional--enables-undoredohide).
 
 ## Workspace structure
 
