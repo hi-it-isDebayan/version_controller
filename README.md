@@ -182,6 +182,28 @@ The `.version_controller/` directory is in `.gitignore` — raw Git/Sapling
 operations won't touch metadata. The `vc-data` branch is separate from source
 branches. No interference.
 
+### Concrete examples
+
+Use `sl` (or `git`) to inspect the same commits that `vc` manages:
+
+```bash
+# After vc save, inspect the commit
+vc save "Added login"        # output: a1b2c3d4e5f6 0
+git show a1b2c3d4e5f6       # see full diff
+git log --oneline -5        # see recent vc commits
+
+# With Sapling backend:
+sl log -r "draft()"
+sl diff -r .~2 -r .
+sl show --stat a1b2c3d4e5f6
+```
+
+The commit messages follow the pattern `VC:T00001|action`, so you can filter:
+
+```bash
+sl log -r "draft()" --line-range "re:VC:"
+```
+
 ## License
 
 MIT

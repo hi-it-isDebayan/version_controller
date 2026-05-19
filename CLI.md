@@ -5,6 +5,10 @@ All commands are run with `vc <command> [options]` from inside a project directo
 > `vc` covers the task-tracking workflow. For advanced operations like rebase,
 > merge, split, or graft, use `git` or `sl` directly — they work alongside `vc`
 > without conflict.
+>
+> **To inspect past changes:** `sl log`, `sl show`, `sl diff`, `git log`,
+> `git show`, `git diff` all work on `vc`-created commits. Just use them
+> directly — no need for a `vc show` command.
 
 ## Task management
 
