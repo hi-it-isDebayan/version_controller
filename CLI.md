@@ -36,13 +36,16 @@ $ vc current
 T48162 active Build login feature
 ```
 
-### `vc complete <task_id>`
+### `vc complete [task_id]`
 
-Mark a task as completed. The history is preserved but the task is no longer active.
+Mark a task as completed. If no task_id given, completes the current active task.
 
 ```
-$ vc complete T48162
+$ vc complete
 T48162 completed
+
+$ vc complete T48901
+T48901 completed
 ```
 
 ---
@@ -82,20 +85,24 @@ A  src/utils.py
 
 ## Snapshots
 
-### `vc save <message> [--agent NAME] [--files FILE...]`
+### `vc save [message] [--agent NAME] [--files FILE...]`
 
-Auto-stage all changes, commit, and save a snapshot. The message describes what changed.
+Auto-stage all changes, commit, and save a snapshot. If no message given, auto-generates one.
 
 ```
+$ vc save
+a1b2c3d4e5f6 0
+
 $ vc save "Create login function"
-d85119870b0e 0
+d85119870b0e 1
 
 $ vc save "Add logout" --agent dev --files login.py utils.py
-9bb18e744790 1
+9bb18e744790 2
 ```
 
 | Option | Default | Description |
 |---|---|---|
+| `message` | *(auto-generated)* | Snapshot description |
 | `--agent` | *(none)* | Who made the change |
 | `--files` | *(none)* | List of files changed |
 
@@ -173,25 +180,22 @@ current:  d85119870b0e
 
 ## Rollback
 
-### `vc rollback --version <index>`
+### `vc rollback [--version <index>] [--commit <hash>]`
 
-Rollback to a specific version by index (0 = first snapshot).
+Rollback to a version. With no args, rolls back to the **previous** snapshot.
 
 ```
-$ vc rollback --version 0
+$ vc rollback
 d85119870b0e
-```
 
-After rollback, the working tree reflects that version. CSV metadata is preserved (no data loss).
+$ vc rollback --version 0
+(back to first snapshot)
 
-### `vc rollback --commit <hash>`
-
-Rollback to a specific commit hash.
-
-```
 $ vc rollback --commit a1b2c3d4e5f6
 a1b2c3d4e5f6
 ```
+
+After rollback, the working tree reflects that version. CSV metadata is preserved (no data loss).
 
 ---
 

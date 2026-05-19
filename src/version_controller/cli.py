@@ -38,7 +38,7 @@ def cmd_track(args):
 
 def cmd_save(args):
     vc = get_vc()
-    meta = {"action": args.message}
+    meta = {"action": args.message} if args.message else {}
     if args.agent:
         meta["agent"] = args.agent
     if args.files:
@@ -68,7 +68,7 @@ def cmd_rollback(args):
     elif args.version is not None:
         r = vc.rollback(version_index=args.version)
     else:
-        r = vc.rollback(version_index=0)
+        r = vc.rollback()
     print(r["rolled_back_to"][:12])
 
 
@@ -162,8 +162,8 @@ def cmd_undo(args):
     try:
         r = vc.undo()
         print(r)
-    except NotImplementedError:
-        print("undo not supported on Git backend")
+    except NotImplementedError as e:
+        print(e)
 
 
 def cmd_redo(args):
@@ -171,8 +171,8 @@ def cmd_redo(args):
     try:
         r = vc.redo()
         print(r)
-    except NotImplementedError:
-        print("redo not supported on Git backend")
+    except NotImplementedError as e:
+        print(e)
 
 
 def cmd_hide(args):
@@ -180,8 +180,8 @@ def cmd_hide(args):
     try:
         r = vc.hide(args.rev)
         print(r)
-    except NotImplementedError:
-        print("hide not supported on Git backend")
+    except NotImplementedError as e:
+        print(e)
 
 
 def cmd_unhide(args):
@@ -189,8 +189,8 @@ def cmd_unhide(args):
     try:
         r = vc.unhide(args.rev)
         print(r)
-    except NotImplementedError:
-        print("unhide not supported on Git backend")
+    except NotImplementedError as e:
+        print(e)
 
 
 def cmd_tasks(args):
@@ -205,8 +205,14 @@ def cmd_tasks(args):
 
 def cmd_complete(args):
     vc = get_vc()
-    vc.csv_logger.update_task(args.task_id, status="completed")
-    print(f"{args.task_id} completed")
+    tid = args.task_id or vc._current_task_id
+    if not tid:
+        print("no active task to complete")
+        return
+    vc.csv_logger.update_task(tid, status="completed")
+    if tid == vc._current_task_id:
+        vc._current_task_id = None
+    print(f"{tid} completed")
 
 
 def cmd_current(args):
@@ -247,14 +253,11 @@ def main():
     EXAMPLES = {
         "start": "  vc start \"Add login feature\"",
         "track": "  vc track src/main.py",
-        "save": "  vc save \"Implemented auth\"  |  vc save \"Fix\" --agent agent-1",
         "log": "  vc log",
-        "rollback": "  vc rollback --version 2  |  vc rollback --commit abc1234",
         "diff": "  vc diff  |  vc diff abc1234 def5678",
         "feedback": "  vc feedback \"Needs review\"",
         "sync": "  vc sync  |  vc sync \"sync metadata before push\"",
         "tasks": "  vc tasks",
-        "complete": "  vc complete T00001",
         "current": "  vc current",
         "restore": "  vc restore",
         "push": "  vc push  |  vc push upstream main",
@@ -281,8 +284,8 @@ def main():
     p.add_argument("path")
     p.set_defaults(func=cmd_track)
 
-    p = sub.add_parser("save", help="Save a snapshot (auto-stages all)", epilog=EXAMPLES["save"])
-    p.add_argument("message")
+    p = sub.add_parser("save", help="Save a snapshot (auto-stages all)", epilog="  vc save  |  vc save \"Implemented auth\"  |  vc save \"Fix\" --agent agent-1")
+    p.add_argument("message", nargs="?", default=None)
     p.add_argument("--agent", default=None)
     p.add_argument("--files", nargs="*", default=None)
     p.set_defaults(func=cmd_save)
@@ -290,7 +293,7 @@ def main():
     p = sub.add_parser("log", aliases=["history"], help="Show task history", epilog=EXAMPLES["log"])
     p.set_defaults(func=cmd_log)
 
-    p = sub.add_parser("rollback", help="Rollback to a version", epilog=EXAMPLES["rollback"])
+    p = sub.add_parser("rollback", help="Rollback to a version", epilog="  vc rollback  |  vc rollback --version 2  |  vc rollback --commit abc1234")
     p.add_argument("--version", type=int, default=None)
     p.add_argument("--commit", default=None)
     p.set_defaults(func=cmd_rollback)
@@ -311,8 +314,8 @@ def main():
     p = sub.add_parser("tasks", help="List all tasks", epilog=EXAMPLES["tasks"])
     p.set_defaults(func=cmd_tasks)
 
-    p = sub.add_parser("complete", help="Mark a task as completed", epilog=EXAMPLES["complete"])
-    p.add_argument("task_id")
+    p = sub.add_parser("complete", help="Mark a task as completed", epilog="  vc complete  |  vc complete T00001")
+    p.add_argument("task_id", nargs="?", default=None)
     p.set_defaults(func=cmd_complete)
 
     p = sub.add_parser("current", help="Show the current active task", epilog=EXAMPLES["current"])
