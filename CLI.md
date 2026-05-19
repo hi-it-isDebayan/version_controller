@@ -313,27 +313,45 @@ feedback recorded
 
 ---
 
-## Sapling-only (not available on Git backend)
+## Undo / Redo / Hide / Unhide
 
-These commands work natively with `SaplingBackend`. When using the Git backend,
-the module **automatically falls back to Sapling** if `sl` is installed and in PATH.
+These operations are natively supported by `SaplingBackend`. When using the Git
+backend, `vc` **automatically falls back to Sapling** if `sl` is installed and on
+your PATH — no reconfiguration needed.
+
 If Sapling is not installed, an informative error tells you how to install it.
 
 ### `vc undo`
 
 Undo the last operation.
 
+```
+$ vc undo
+```
+
 ### `vc redo`
 
 Redo the last undone operation.
+
+```
+$ vc redo
+```
 
 ### `vc hide <rev>`
 
 Hide a commit from the visible history.
 
+```
+$ vc hide a1b2c3d4e5f6
+```
+
 ### `vc unhide <rev>`
 
 Restore a hidden commit.
+
+```
+$ vc unhide a1b2c3d4e5f6
+```
 
 ---
 
@@ -353,5 +371,5 @@ Show the installed version.
 
 ```
 $ vc --version
-vc 1.0.0
+vc 1.1.0
 ```

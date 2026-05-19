@@ -77,8 +77,10 @@ All features are also available via the `vc` command-line tool:
 ```bash
 vc start "Build login"
 vc track login.py
-vc save "Create login"
+vc save
 vc log
+vc complete
+vc undo          # auto-falls back to sl if on Git backend
 ```
 
 See the full reference: [CLI.md](CLI.md)
