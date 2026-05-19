@@ -315,7 +315,9 @@ feedback recorded
 
 ## Sapling-only (not available on Git backend)
 
-These commands work only with `SaplingBackend`. On Git, they print an informational message.
+These commands work natively with `SaplingBackend`. When using the Git backend,
+the module **automatically falls back to Sapling** if `sl` is installed and in PATH.
+If Sapling is not installed, an informative error tells you how to install it.
 
 ### `vc undo`
 

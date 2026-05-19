@@ -129,30 +129,26 @@ class GitBackend:
 
     def undo(self):
         raise NotImplementedError(
-            "Git backend does not support `undo`. Switch to Sapling:\n"
-            "  VersionController(workspace='.', backend='sapling')\n"
-            "Or use `git reflog` to find and reset to a previous state."
+            "Git backend does not support `undo`. "
+            "Install Sapling (https://sapling-scm.com/) for automatic fallback."
         )
 
     def redo(self):
         raise NotImplementedError(
-            "Git backend does not support `redo`. Switch to Sapling:\n"
-            "  VersionController(workspace='.', backend='sapling')\n"
-            "Or use `git reflog` to find and reset to a previous state."
+            "Git backend does not support `redo`. "
+            "Install Sapling (https://sapling-scm.com/) for automatic fallback."
         )
 
     def hide(self, rev: str):
         raise NotImplementedError(
-            "Git backend does not support `hide`. Switch to Sapling:\n"
-            "  VersionController(workspace='.', backend='sapling')\n"
-            "Or delete the branch manually with `git branch -D`."
+            "Git backend does not support `hide`. "
+            "Install Sapling (https://sapling-scm.com/) for automatic fallback."
         )
 
     def unhide(self, rev: str):
         raise NotImplementedError(
-            "Git backend does not support `unhide`. Switch to Sapling:\n"
-            "  VersionController(workspace='.', backend='sapling')\n"
-            "Or use `git reflog` to find and restore a deleted branch."
+            "Git backend does not support `unhide`. "
+            "Install Sapling (https://sapling-scm.com/) for automatic fallback."
         )
 
     def amend(self, message: str) -> str:

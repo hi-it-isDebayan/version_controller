@@ -88,7 +88,7 @@ See the full reference: [CLI.md](CLI.md)
 ```python
 from version_controller import VersionController
 
-# Initialize with a project workspace
+# Initialize with a project workspace (default backend is "git")
 vc = VersionController(workspace="./my-project", backend="git")
 
 # Start a task
@@ -114,6 +114,11 @@ vc.rollback(version_index=0)
 
 # Sync metadata to vc-data branch (requires a Git remote)
 vc.sync("Progress update")
+
+# undo/redo/hide/unhide auto-fallback to Sapling if available
+# (no need to reconfigure — just install `sl` and it works)
+vc.undo()
+vc.hide("abc1234")
 ```
 
 ## Capabilities

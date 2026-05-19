@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 from typing import Optional
 
@@ -205,19 +206,106 @@ class VersionController:
     def clean(self) -> str:
         return self.backend.clean()
 
+    def _check_sapling_available(self) -> bool:
+        try:
+            result = subprocess.run(
+                ["sl", "--version"],
+                capture_output=True, text=True,
+                timeout=5,
+            )
+            return result.returncode == 0
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return False
+
+    def _fallback_undo(self):
+        if self.backend_name == "sapling":
+            raise RuntimeError(
+                "Neither backend supports `undo`. "
+                "Install Sapling (https://sapling-scm.com/) and ensure `sl` is in PATH."
+            )
+        if not self._check_sapling_available():
+            raise RuntimeError(
+                "Git backend does not support `undo`. "
+                "Sapling is not installed or not in PATH.\n"
+                "Install: https://sapling-scm.com/docs/introduction/installation\n"
+                "Then retry this command."
+            )
+        sl = SaplingBackend(self.workspace)
+        return sl.undo()
+
+    def _fallback_redo(self):
+        if self.backend_name == "sapling":
+            raise RuntimeError(
+                "Neither backend supports `redo`. "
+                "Install Sapling (https://sapling-scm.com/) and ensure `sl` is in PATH."
+            )
+        if not self._check_sapling_available():
+            raise RuntimeError(
+                "Git backend does not support `redo`. "
+                "Sapling is not installed or not in PATH.\n"
+                "Install: https://sapling-scm.com/docs/introduction/installation\n"
+                "Then retry this command."
+            )
+        sl = SaplingBackend(self.workspace)
+        return sl.redo()
+
+    def _fallback_hide(self, rev: str):
+        if self.backend_name == "sapling":
+            raise RuntimeError(
+                "Neither backend supports `hide`. "
+                "Install Sapling (https://sapling-scm.com/) and ensure `sl` is in PATH."
+            )
+        if not self._check_sapling_available():
+            raise RuntimeError(
+                "Git backend does not support `hide`. "
+                "Sapling is not installed or not in PATH.\n"
+                "Install: https://sapling-scm.com/docs/introduction/installation\n"
+                "Then retry this command."
+            )
+        sl = SaplingBackend(self.workspace)
+        return sl.hide(rev)
+
+    def _fallback_unhide(self, rev: str):
+        if self.backend_name == "sapling":
+            raise RuntimeError(
+                "Neither backend supports `unhide`. "
+                "Install Sapling (https://sapling-scm.com/) and ensure `sl` is in PATH."
+            )
+        if not self._check_sapling_available():
+            raise RuntimeError(
+                "Git backend does not support `unhide`. "
+                "Sapling is not installed or not in PATH.\n"
+                "Install: https://sapling-scm.com/docs/introduction/installation\n"
+                "Then retry this command."
+            )
+        sl = SaplingBackend(self.workspace)
+        return sl.unhide(rev)
+
     # ── undo / redo / hide / unhide / amend / shelve / unshelve ─
 
     def undo(self):
-        return self.backend.undo()
+        try:
+            return self.backend.undo()
+        except NotImplementedError:
+            return self._fallback_undo()
 
     def redo(self):
-        return self.backend.redo()
+        try:
+            return self.backend.redo()
+        except NotImplementedError:
+            return self._fallback_redo()
 
     def hide(self, rev: str):
-        return self.backend.hide(rev)
+        try:
+            return self.backend.hide(rev)
+        except NotImplementedError:
+            return self._fallback_hide(rev)
 
     def unhide(self, rev: str):
-        return self.backend.unhide(rev)
+        try:
+            return self.backend.unhide(rev)
+        except NotImplementedError:
+            return self._fallback_unhide(rev)
 
     def amend(self, message: str) -> str:
         return self.backend.amend(message)

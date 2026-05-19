@@ -162,7 +162,7 @@ def cmd_undo(args):
     try:
         r = vc.undo()
         print(r)
-    except NotImplementedError as e:
+    except RuntimeError as e:
         print(e)
 
 
@@ -171,7 +171,7 @@ def cmd_redo(args):
     try:
         r = vc.redo()
         print(r)
-    except NotImplementedError as e:
+    except RuntimeError as e:
         print(e)
 
 
@@ -180,7 +180,7 @@ def cmd_hide(args):
     try:
         r = vc.hide(args.rev)
         print(r)
-    except NotImplementedError as e:
+    except RuntimeError as e:
         print(e)
 
 
@@ -189,7 +189,7 @@ def cmd_unhide(args):
     try:
         r = vc.unhide(args.rev)
         print(r)
-    except NotImplementedError as e:
+    except RuntimeError as e:
         print(e)
 
 
